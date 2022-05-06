@@ -15,17 +15,22 @@ impl Command {
     fn parse(entry: &str) -> Command {
         let words: Vec<&str> = entry.split_whitespace().collect();
         match words.get(0) {
-            // TODO fix panick
             Some(&"add") => {
-                let employee = core::Employee {
-                    name: words.get(1).expect("No name provided").to_string(),
-                    department: words.get(3).expect("No department provided").to_string(),
+                if words.get(1) == None || words.get(2) == None {
+                    println!("No name or department provided");
+                    return Command::Init;
                 };
-                Command::Add(employee)
+                Command::Add(core::Employee {
+                    name: words[1].to_string(),
+                    department: words[3].to_string(),
+                })
             }
-            // TODO fix panick
             Some(&"list") => {
-                Command::List(words.get(1).expect("Department is missing").to_string())
+                if words.get(1) == None {
+                    println!("No department provided");
+                    return Command::Init;
+                };
+                Command::List(words[1].to_string())
             }
             Some(&"list-all") => Command::ListAll,
             Some(&"quit") => Command::Quit,
